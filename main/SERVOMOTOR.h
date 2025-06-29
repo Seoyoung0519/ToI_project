@@ -8,7 +8,7 @@
 #include "freertos/task.h"
 
 // 서보모터 제어 설정
-#define SERVO_GPIO       18
+#define SERVO_GPIO       16
 #define LEDC_TIMER       LEDC_TIMER_0
 #define LEDC_CHANNEL     LEDC_CHANNEL_0
 #define LEDC_MODE        LEDC_LOW_SPEED_MODE
