@@ -10,8 +10,8 @@
 #define TAG "MOTION_LED"
 
 // MPU6500 I2C 설정
-#define I2C_MASTER_SCL_IO           9
-#define I2C_MASTER_SDA_IO           8
+#define I2C_MASTER_SCL_IO           7
+#define I2C_MASTER_SDA_IO           6
 #define I2C_MASTER_NUM              I2C_NUM_0
 #define I2C_MASTER_FREQ_HZ          100000
 #define MPU6500_SENSOR_ADDR         0x68
@@ -19,9 +19,9 @@
 #define MPU6500_ACCEL_XOUT_H        0x3B
 
 // RGB LED 핀 (공통 캐소드 기준)
-#define LEDC_RED_GPIO   3
-#define LEDC_GREEN_GPIO 4
-#define LEDC_BLUE_GPIO  5
+#define LEDC_RED_GPIO 2
+#define LEDC_GREEN_GPIO 3 
+#define LEDC_BLUE_GPIO 4
 
 void i2c_master_init() {
     i2c_config_t conf = {
@@ -110,14 +110,14 @@ void motion_task(void *arg) {
         }
 
         // 🟢 실시간 LED 색상 출력
-        if (motion_score < 550) {
+        if (motion_score < 210) {
             set_led_color(0, 255, 0);  // 초록
         } else {
             set_led_color(255, 255, 255);  // 빨강
         }
         
-        // 🔴 30초마다 평가 후 리셋
-        if (count >= 300) {
+        // 🔴 10초마다 평가 후 리셋
+        if (count >= 100) {
             char level[16];
             if (motion_score < 300) strcpy(level, "low");
             else if (motion_score < 550) strcpy(level, "medium");
@@ -125,7 +125,7 @@ void motion_task(void *arg) {
 
             char msg[64];
             snprintf(msg, sizeof(msg), "Activity:%s Score:%.1f", level, motion_score);
-            ESP_LOGI(TAG, "[30초 결과] %s", msg);
+            ESP_LOGI(TAG, "[10초 결과] %s", msg);
 
             motion_score = 0;
             count = 0;
