@@ -141,6 +141,8 @@ void motion_task(void *arg) {
             motion_score = 0;
             count = 0;
         }
+
+        vTaskDelay(pdMS_TO_TICKS(loop_delay_ms));
     }
 }
 
