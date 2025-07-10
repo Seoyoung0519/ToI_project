@@ -5,10 +5,10 @@
   "idf.openOcdConfigs": [
     "board/esp32c3-bridge.cfg"
   ],
-  "idf.portWin": "COM4",
+  "idf.portWin": "COM6",
   "idf.toolsPathWin": "c:\\Users\\yunse\\ToI_esp\\esp-idf-tools",
   "idf.customExtraVars": {
-    "IDF_TARGET": "esp32c3"
+    "IDF_TARGET": "esp32"
   },
   "idf.flashType": "UART"
 }

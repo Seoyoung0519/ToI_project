@@ -1,4 +1,4 @@
-C:/Users/yunse/toi_led_file/build/esp-idf/riscv/libriscv.a
+C:/Users/yunse/toi_led_file/build/esp-idf/xtensa/libxtensa.a
 C:/Users/yunse/toi_led_file/build/esp-idf/esp_ringbuf/libesp_ringbuf.a
 C:/Users/yunse/toi_led_file/build/esp-idf/efuse/libefuse.a
 C:/Users/yunse/toi_led_file/build/esp-idf/driver/libdriver.a
@@ -56,6 +56,7 @@ C:/Users/yunse/toi_led_file/build/esp-idf/sdmmc/libsdmmc.a
 C:/Users/yunse/toi_led_file/build/esp-idf/fatfs/libfatfs.a
 C:/Users/yunse/toi_led_file/build/esp-idf/json/libjson.a
 C:/Users/yunse/toi_led_file/build/esp-idf/mqtt/libmqtt.a
+C:/Users/yunse/toi_led_file/build/esp-idf/perfmon/libperfmon.a
 C:/Users/yunse/toi_led_file/build/esp-idf/spiffs/libspiffs.a
 C:/Users/yunse/toi_led_file/build/esp-idf/wifi_provisioning/libwifi_provisioning.a
 C:/Users/yunse/toi_led_file/build/esp-idf/main/libmain.a

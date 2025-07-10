@@ -1,2 +1,2 @@
-idf_component_register(SRCS "motion_led.c" #"led.c" 
+idf_component_register(SRCS "led.c" 
                     INCLUDE_DIRS "")

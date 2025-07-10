@@ -4,12 +4,12 @@
 #include "freertos/task.h"
 #include "esp_log.h"
 #include "driver/ledc.h"
-#include "dummy_motion_data.h"
+#include "dummy_motion_data.h"  // 문자열 배열로 되어 있어야 함
 
 #define TAG "LED_TEST"
-#define LEDC_RED_GPIO   3
-#define LEDC_GREEN_GPIO 4
-#define LEDC_BLUE_GPIO  5
+#define LEDC_RED_GPIO   15
+#define LEDC_GREEN_GPIO 2
+#define LEDC_BLUE_GPIO  4
 
 void rgb_led_init() {
     ledc_timer_config_t ledc_timer = {
@@ -47,27 +47,56 @@ void set_led_color(uint8_t r, uint8_t g, uint8_t b) {
     ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2);
 }
 
+void update_led_by_score(float score) {
+    if (score < 100) {
+        set_led_color(0, 255, 0);   // 초록
+    } else if (score < 200) {
+        set_led_color(0, 0, 255);   // 파랑
+    } else {
+        set_led_color(255, 0, 0);   // 빨강
+    }
+}
+
 void test_led_task(void *arg) {
     int idx = 0;
     int total = sizeof(dummy_data) / sizeof(dummy_data[0]);
+    float accumulated_score = 0.0f;
+    int count = 0;
 
-    while (idx < total) {
+    while (1) {
+        if (idx >= total) {
+            idx = 0; // dummy_data 반복
+        }
+
         float score = 0.0f;
         const char* line = dummy_data[idx++];
         ESP_LOGI(TAG, "[DEBUG] Read line: %s", line);
 
         if (sscanf(line, "Activity:%*[^ ] Score:%f", &score) == 1) {
-            if (score < 550) {
-                set_led_color(0, 255, 0); // 초록
-            } else {
-                set_led_color(255, 255, 255); // 빨강
+            accumulated_score += score;
+            count++;
+
+            if (count >= 10) {  // 0.5초 x 10 = 5초마다 실행
+                // 누적값 출력
+                const char* level;
+                if (accumulated_score < 100) level = "low";
+                else if (accumulated_score < 200) level = "medium";
+                else level = "high";
+
+                ESP_LOGI(TAG, "🔴 5초 누적 운동량: %.1f (%s)", accumulated_score, level);
+
+                // LED 색상 한 번만 변경
+                update_led_by_score(accumulated_score);
+
+                // 초기화
+                accumulated_score = 0.0f;
+                count = 0;
             }
-            ESP_LOGI(TAG, "[LED] Score = %.1f → 색 변경 완료", score);
         } else {
             ESP_LOGE(TAG, "파싱 실패: %s", line);
         }
 
-        vTaskDelay(pdMS_TO_TICKS(10000));
+        vTaskDelay(pdMS_TO_TICKS(500));  // 0.5초 간격
     }
 }
 

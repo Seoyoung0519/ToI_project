@@ -16,7 +16,7 @@ if("${CONFIG}" STREQUAL "" OR "${CONFIG}" STREQUAL "")
   "flasher_args.json"
   "ldgen_libraries"
   "ldgen_libraries.in"
-  "project_elf_src_esp32c3.c"
+  "project_elf_src_esp32.c"
   "toi_led_file.bin"
   "toi_led_file.map"
   "x509_crt_bundle.S"

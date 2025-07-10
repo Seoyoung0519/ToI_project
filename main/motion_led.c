@@ -6,6 +6,7 @@
 #include "esp_log.h"
 #include <math.h>
 #include <string.h>
+#include <stdio.h>
 
 #define TAG "MOTION_LED"
 
@@ -89,8 +90,22 @@ void set_led_color(uint8_t r, uint8_t g, uint8_t b) {
     ledc_update_duty(LEDC_LOW_SPEED_MODE, LEDC_CHANNEL_2);
 }
 
+// 🟢 실시간 LED 색상 출력
+void update_led_by_score(float score) {
+    if (score < 100) {
+        set_led_color(0, 255, 0); // 초록
+    } else if (score < 150) {
+        set_led_color(0, 0, 255); // 파랑
+    } else {
+        set_led_color(255, 0, 0); // 빨강
+    }
+}
+
 void motion_task(void *arg) {
     float motion_score = 0;
+    const int loop_delay_ms = 500;
+    const int loop_per_cycle = 10000 / loop_delay_ms;  // 10초 = 500ms × 20
+
     int count = 0;
 
     while (1) {
@@ -109,30 +124,23 @@ void motion_task(void *arg) {
             motion_score += delta;
         }
 
-        // 🟢 실시간 LED 색상 출력
-        if (motion_score < 210) {
-            set_led_color(0, 255, 0);  // 초록
-        } else {
-            set_led_color(255, 255, 255);  // 빨강
-        }
-        
+        count++
         // 🔴 10초마다 평가 후 리셋
-        if (count >= 100) {
-            char level[16];
-            if (motion_score < 300) strcpy(level, "low");
-            else if (motion_score < 550) strcpy(level, "medium");
-            else strcpy(level, "high");
+        if (count >= loop_per_cycle) {
+            const char *level;
+            if (motion_score < 100) level = "low";
+            else if (motion_score < 150) level = "medium";
+            else level = "high";
 
-            char msg[64];
-            snprintf(msg, sizeof(msg), "Activity:%s Score:%.1f", level, motion_score);
-            ESP_LOGI(TAG, "[10초 결과] %s", msg);
+            ESP_LOGI(TAG, "📊 [10초 결과] Activity:%s Score:%.1f", level, motion_score);
+            
+            // 누적 운동량 기반 LED 색상 한 번 변경
+            update_led_by_score(motion_score);
 
+            // 리셋
             motion_score = 0;
             count = 0;
         }
-
-        count++;
-        vTaskDelay(pdMS_TO_TICKS(100));
     }
 }
 
